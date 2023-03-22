@@ -51,23 +51,39 @@ class MarcoServidor extends JFrame implements Runnable { // Para que este perman
 		// System.out.println("Esto");
 		
 		try {
-			ServerSocket servidor = new ServerSocket(1090); // Se abre puerta 9999 y esta a la escucha
+			ServerSocket servidor = new ServerSocket(9999); // Se abre puerta 9999 y esta a la escucha
+		
+			String nick, ip, mensaje;
+			
+			PaqueteEnvio paquete_recibido;
 			
 			while (true) {
 				Socket miSocket = servidor.accept(); // Que acepte las conexiones
 				
+				ObjectInputStream paquete_datos = new ObjectInputStream(miSocket.getInputStream());
+				
+				paquete_recibido = (PaqueteEnvio) paquete_datos.readObject();
+				
+				nick = paquete_recibido.getNick();
+				
+				ip = paquete_recibido.getIp();
+				
+				mensaje = paquete_recibido.getMensje();
+				
+				areatexto.append("\n" + nick +": " + mensaje + " para " + ip);
+				/*
 				// Crear un flujo de entrada
 				DataInputStream flujo_entrada = new DataInputStream(miSocket.getInputStream()); // por que socket viaja la info
 				
 				String mensaje_texto = flujo_entrada.readUTF();
 				
-				areatexto.append("\n" + mensaje_texto);
+				areatexto.append("\n" + mensaje_texto);*/
 				
 				miSocket.close();
 			}
 			
 			
-		} catch (IOException e) {
+		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
